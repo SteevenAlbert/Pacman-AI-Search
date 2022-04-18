@@ -118,7 +118,7 @@ def depthFirstSearch(problem):
     "*** YOUR CODE HERE ***"
     visited = []
     frontiers = util.Stack()
-    frontiers.push((problem.getStartState(), [], 1))
+    frontiers.push((problem.getStartState(), [], 0))
 
     while not frontiers.isEmpty():
         state, actions, cost = frontiers.pop()
@@ -134,10 +134,6 @@ def depthFirstSearch(problem):
                
                    
 
-
-    
-
-
 def breadthFirstSearch(problem):
     """
     Q1.2
@@ -145,7 +141,7 @@ def breadthFirstSearch(problem):
     "*** YOUR CODE HERE ***"
     visited = []
     frontiers = util.Queue()
-    frontiers.push((problem.getStartState(), [], 1))
+    frontiers.push((problem.getStartState(), [], 0))
 
     while not frontiers.isEmpty():
         state, actions, cost = frontiers.pop()
@@ -172,6 +168,54 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     Search the node that has the lowest combined cost and heuristic first."""
     """Call heuristic(s,problem) to get h(s) value."""
     "*** YOUR CODE HERE ***"
+    visited = []
+    frontiers = util.PriorityQueue()
+    frontiers.push((problem.getStartState(), [], 0), heuristic(problem.getStartState(), problem))
+
+    while not frontiers.isEmpty():
+        state, actions, cost = frontiers.pop()
+        
+        if state not in visited:
+
+            visited.append(state)
+            if problem.isGoalState(state):
+                return actions    
+            
+            successors = problem.getSuccessors(state)
+            
+            for succ in successors:
+                succ_state, succ_action, succ_cost = succ 
+                updatedActions =  actions + [succ_action]
+                updatedCost =  cost + succ_cost 
+                frontiers.push((succ_state, updatedActions, updatedCost), updatedCost + heuristic(succ_state, problem))
+
+
+def greedyBestFirstSearch(problem, heuristic=nullHeuristic):
+    """
+    Q1.3
+    Search the node that has the lowest combined cost and heuristic first."""
+    """Call heuristic(s,problem) to get h(s) value."""
+    "*** YOUR CODE HERE ***"
+    visited = []
+    frontiers = util.PriorityQueue()
+    frontiers.push((problem.getStartState(), [], 0), heuristic(problem.getStartState(), problem))
+
+    while not frontiers.isEmpty():
+        state, actions, cost = frontiers.pop()
+        
+        if state not in visited:
+
+            visited.append(state)
+            if problem.isGoalState(state):
+                return actions    
+            
+            successors = problem.getSuccessors(state)
+            
+            for succ in successors:
+                succ_state, succ_action, succ_cost = succ 
+                updatedActions =  actions + [succ_action]
+                frontiers.push((succ_state, updatedActions, cost), heuristic(succ_state, problem))
+
 
 
 
@@ -179,5 +223,6 @@ def aStarSearch(problem, heuristic=nullHeuristic):
 bfs = breadthFirstSearch
 dfs = depthFirstSearch
 astar = aStarSearch
+gbfs = greedyBestFirstSearch
 
 obj = SearchProblem()
