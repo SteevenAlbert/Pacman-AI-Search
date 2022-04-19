@@ -11,30 +11,6 @@
 # Student side autograding was added by Brad Miller, Nick Hay, and
 # Pieter Abbeel (pabbeel@cs.berkeley.edu).
 
-#####################################################
-#####################################################
-# Please enter the number of hours you spent on this
-# assignment here
-"""
-num_hours_i_spent_on_this_assignment = 0
-"""
-#
-#####################################################
-#####################################################
-
-#####################################################
-#####################################################
-# Give one short piece of feedback about the course so far. What
-# have you found most interesting? Is there a topic that you had trouble
-# understanding? Are there any changes that could improve the value of the
-# course to you? (We will anonymize these before reading them.)
-"""
-<Your feedback goes here>
-
-"""
-#####################################################
-#####################################################
-
 """
 In search.py, you will implement generic search algorithms which are called by
 Pacman agents (in searchAgents.py).
@@ -42,7 +18,7 @@ Pacman agents (in searchAgents.py).
 
 import util
 
-
+#------------------------------------------------------------Given Functions------------------------------------------------------------#
 class SearchProblem:
     """
     This class outlines the structure of a search problem, but doesn't implement
@@ -85,6 +61,16 @@ class SearchProblem:
         """
         util.raiseNotDefined()
 
+
+
+
+def nullHeuristic(state, problem=None):
+    """
+    A heuristic function estimates the cost from the current state to the nearest
+    goal in the provided SearchProblem.  This heuristic is trivial.
+    """
+    return 0
+
 from game import Directions
 def tinyMazeSearch(problem):
     """
@@ -95,81 +81,116 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
+#------------------------------------------------------------Start of Questions------------------------------------------------------------#
+
+###########################
+#          Q1 DFS         #
+###########################
 def depthFirstSearch(problem):
-    """
-    Q1.1
-    Search the deepest nodes in the search tree first.
-
-    Your search algorithm needs to return a list of actions that reaches the
-    goal. Make sure to implement a graph search algorithm.
-
-    To get started, you might want to try some of these simple commands to
-    understand the search problem that is being passed in:
-
-    print ( problem.getStartState() )
-    You will get (5,5)
-
-    print (problem.isGoalState(problem.getStartState()) )
-    You will get True
-
-    print ( problem.getSuccessors(problem.getStartState()) )
-    You will get [((x1,y1),'South',1),((x2,y2),'West',1)]
-    """
-    "*** YOUR CODE HERE ***"
     visited = []
     frontiers = util.Stack()
+
+    #push the initial position into frontiers list with cost 0
     frontiers.push((problem.getStartState(), [], 0))
 
     while not frontiers.isEmpty():
+        #get the node to be expanded 
+        #(position, action required to reach it, and its cost)
+        #((x1,y1),'South',1)
         state, actions, cost = frontiers.pop()
         if state not in visited:
             visited.append(state)
+
             if problem.isGoalState(state):
+                #example: [s,s,w,e,n]
                 return actions    
+
             successors = problem.getSuccessors(state)
+        
+            #iterate over the neighbors, add them to frontiers list
             for succ in successors:
                 succ_state, succ_action, succ_cost = succ 
+                
+                #Actions required to reach the successor state from start
                 updatedActions =  actions + [succ_action]
                 frontiers.push((succ_state, updatedActions, succ_cost))
                
                    
-
+###########################
+#          Q2 BFS         #
+###########################
 def breadthFirstSearch(problem):
-    """
-    Q1.2
-    Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
+
     visited = []
     frontiers = util.Queue()
+    #push the initial position into frontiers list with cost 0
     frontiers.push((problem.getStartState(), [], 0))
 
     while not frontiers.isEmpty():
+        #get the node to be expanded 
+        #(position, action required to reach it, and its cost)
+        #((x1,y1),'South',1)
         state, actions, cost = frontiers.pop()
+
         if state not in visited:
             visited.append(state)
             if problem.isGoalState(state):
+                #example: [s,s,w,e,n]
                 return actions    
+
             successors = problem.getSuccessors(state)
+
+            #iterate over the neighbors, add them to frontiers list
             for succ in successors:
                 succ_state, succ_action, succ_cost = succ 
+
+                #Actions required to reach the successor state from start
                 updatedActions =  actions + [succ_action]
                 frontiers.push((succ_state, updatedActions, succ_cost))
 
-def nullHeuristic(state, problem=None):
-    """
-    A heuristic function estimates the cost from the current state to the nearest
-    goal in the provided SearchProblem.  This heuristic is trivial.
-    """
-    return 0
 
-def aStarSearch(problem, heuristic=nullHeuristic):
-    """
-    Q1.3
-    Search the node that has the lowest combined cost and heuristic first."""
-    """Call heuristic(s,problem) to get h(s) value."""
-    "*** YOUR CODE HERE ***"
+###########################
+#          Q3 UCS         #
+###########################
+def uniformCostSearch(problem):
     visited = []
     frontiers = util.PriorityQueue()
+
+    #push the initial position into frontiers list with cost 0 (Cost is the priority)
+    frontiers.push((problem.getStartState(), [], 0), 0)
+
+    while not frontiers.isEmpty():
+        state, actions, cost = frontiers.pop()
+        
+        if state not in visited:
+
+            visited.append(state)
+            if problem.isGoalState(state):
+                return actions    
+            
+            successors = problem.getSuccessors(state)
+            
+            for succ in successors:
+                succ_state, succ_action, succ_cost = succ 
+
+                #Actions required to reach the successor state from start
+                updatedActions =  actions + [succ_action]
+
+                #Cost to reach the successor state from start
+                updatedCost =  cost + succ_cost 
+
+                #updated cost is the successor's priority
+                frontiers.push((succ_state, updatedActions, updatedCost), updatedCost )
+
+
+###########################
+#       Q4 A* Search      #
+###########################
+def aStarSearch(problem, heuristic=nullHeuristic):
+    visited = []
+    frontiers = util.PriorityQueue()
+
+    #push the initial position into frontiers list (heuristic + cost is the priority)
     frontiers.push((problem.getStartState(), [], 0), heuristic(problem.getStartState(), problem))
 
     while not frontiers.isEmpty():
@@ -185,44 +206,54 @@ def aStarSearch(problem, heuristic=nullHeuristic):
             
             for succ in successors:
                 succ_state, succ_action, succ_cost = succ 
+
+                #Actions required to reach the successor state from start
                 updatedActions =  actions + [succ_action]
+
+                #Cost to reach the successor state from start
                 updatedCost =  cost + succ_cost 
+
+                #updatedCost + the successor's heuristic is the successor's priority
                 frontiers.push((succ_state, updatedActions, updatedCost), updatedCost + heuristic(succ_state, problem))
 
 
+###########################
+#         Q5 GBFS         #
+###########################
 def greedyBestFirstSearch(problem, heuristic=nullHeuristic):
-    """
-    Q1.3
-    Search the node that has the lowest combined cost and heuristic first."""
-    """Call heuristic(s,problem) to get h(s) value."""
-    "*** YOUR CODE HERE ***"
     visited = []
     frontiers = util.PriorityQueue()
+
+    #push the initial position into frontiers list (heuristic is the priority)
     frontiers.push((problem.getStartState(), [], 0), heuristic(problem.getStartState(), problem))
 
     while not frontiers.isEmpty():
-        state, actions, cost = frontiers.pop()
-        
-        if state not in visited:
+        state, actions, cost = frontiers.pop()  
 
+        if state not in visited: 
             visited.append(state)
             if problem.isGoalState(state):
                 return actions    
-            
+
             successors = problem.getSuccessors(state)
-            
             for succ in successors:
                 succ_state, succ_action, succ_cost = succ 
+
+                #Actions required to reach the successor state from start
                 updatedActions =  actions + [succ_action]
+
+                #The successor's heuristic is the successor's priority
                 frontiers.push((succ_state, updatedActions, cost), heuristic(succ_state, problem))
 
 
 
 
 # Abbreviations
-bfs = breadthFirstSearch
 dfs = depthFirstSearch
+bfs = breadthFirstSearch
+ucs = uniformCostSearch
 astar = aStarSearch
 gbfs = greedyBestFirstSearch
+
 
 obj = SearchProblem()
