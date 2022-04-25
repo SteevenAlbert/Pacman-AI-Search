@@ -24,7 +24,7 @@ from game import Directions
 # Some code from a Pacman implementation by LiveWires, and used / modified with permission.
 
 DEFAULT_GRID_SIZE = 30.0
-INFO_PANE_HEIGHT = 35
+INFO_PANE_HEIGHT = 80
 BACKGROUND_COLOR = formatColor(0,0,0)
 WALL_COLOR = formatColor(0.0/255.0, 51.0/255.0, 255.0/255.0)
 INFO_PANE_COLOR = formatColor(.4,.4,0)
@@ -104,6 +104,7 @@ class InfoPane:
 
     def drawPane(self):
         self.scoreText = text( self.toScreen(0, 0  ), self.textColor, "SCORE:    0", "Times", self.fontSize, "bold")
+        self.timeText = text( self.toScreen(0, 30), self.textColor, "TIME:    0", "Times", self.fontSize, "bold")
 
     def initializeGhostDistances(self, distances):
         self.ghostDistanceText = []
@@ -120,6 +121,9 @@ class InfoPane:
 
     def updateScore(self, score):
         changeText(self.scoreText, "SCORE: % 4d" % score)
+
+    def setTime(self, time_taken):
+        changeText(self.timeText, "Time: %.5f" % time_taken)
 
     def setTeam(self, isBlue):
         text = "RED TEAM"
@@ -250,6 +254,7 @@ class PacmanGraphics:
         if newState._capsuleEaten != None:
             self.removeCapsule(newState._capsuleEaten, self.capsules)
         self.infoPane.updateScore(newState.score)
+        self.infoPane.setTime(newState.time_taken)
         if 'ghostDistances' in dir(newState):
             self.infoPane.updateGhostDistances(newState.ghostDistances)
 

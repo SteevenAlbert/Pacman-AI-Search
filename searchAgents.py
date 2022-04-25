@@ -118,6 +118,8 @@ class SearchAgent(Agent):
         print(('Path found with total cost of %d in %.5f seconds' % (totalCost, time.time() - starttime)))
         if '_expanded' in dir(problem): print(('Search nodes expanded: %d' % problem._expanded))
 
+
+
     def getAction(self, state):
         """
         Returns the next action in the path chosen earlier (in
