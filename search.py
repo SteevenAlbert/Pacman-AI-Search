@@ -111,9 +111,13 @@ def depthFirstSearch(problem):
             for succ in successors:
                 succ_state, succ_action, succ_cost = succ 
                 
-                #Actions required to reach the successor state from start
-                updatedActions =  actions + [succ_action]
-                frontiers.push((succ_state, updatedActions, succ_cost))
+                #To minimize the size of the frontiers list, we check whether the succ_state
+                #was already visited (it would be more time efficient to remove this statement, Space-time tradeoff)
+                if succ_state not in visited:
+                    #Actions required to reach the successor state from start
+                    updatedActions =  actions + [succ_action]
+                    frontiers.push((succ_state, updatedActions, succ_cost))
+    return []
                
                    
 ###########################
@@ -144,9 +148,11 @@ def breadthFirstSearch(problem):
             for succ in successors:
                 succ_state, succ_action, succ_cost = succ 
 
-                #Actions required to reach the successor state from start
-                updatedActions =  actions + [succ_action]
-                frontiers.push((succ_state, updatedActions, succ_cost))
+                if succ_state not in visited:
+                    #Actions required to reach the successor state from start
+                    updatedActions =  actions + [succ_action]
+                    frontiers.push((succ_state, updatedActions, succ_cost))
+    return []
 
 
 ###########################
@@ -173,14 +179,16 @@ def uniformCostSearch(problem):
             for succ in successors:
                 succ_state, succ_action, succ_cost = succ 
 
-                #Actions required to reach the successor state from start
-                updatedActions =  actions + [succ_action]
+                if succ_state not in visited:
+                    #Actions required to reach the successor state from start
+                    updatedActions =  actions + [succ_action]
 
-                #Cost to reach the successor state from start
-                updatedCost =  cost + succ_cost 
+                    #Cost to reach the successor state from start
+                    updatedCost =  cost + succ_cost 
 
-                #updated cost is the successor's priority
-                frontiers.push((succ_state, updatedActions, updatedCost), updatedCost )
+                    #updated cost is the successor's priority
+                    frontiers.push((succ_state, updatedActions, updatedCost), updatedCost )
+    return []
 
 
 ###########################
@@ -207,14 +215,16 @@ def aStarSearch(problem, heuristic=nullHeuristic):
             for succ in successors:
                 succ_state, succ_action, succ_cost = succ 
 
-                #Actions required to reach the successor state from start
-                updatedActions =  actions + [succ_action]
+                if succ_state not in visited:
+                    #Actions required to reach the successor state from start
+                    updatedActions =  actions + [succ_action]
 
-                #Cost to reach the successor state from start
-                updatedCost =  cost + succ_cost 
+                    #Cost to reach the successor state from start
+                    updatedCost =  cost + succ_cost 
 
-                #updatedCost + the successor's heuristic is the successor's priority
-                frontiers.push((succ_state, updatedActions, updatedCost), updatedCost + heuristic(succ_state, problem))
+                    #updatedCost + the successor's heuristic is the successor's priority
+                    frontiers.push((succ_state, updatedActions, updatedCost), updatedCost + heuristic(succ_state, problem))
+    return []
 
 
 ###########################
@@ -239,14 +249,14 @@ def greedyBestFirstSearch(problem, heuristic=nullHeuristic):
             for succ in successors:
                 succ_state, succ_action, succ_cost = succ 
 
-                #Actions required to reach the successor state from start
-                updatedActions =  actions + [succ_action]
+                if succ_state not in visited:
+                    #Actions required to reach the successor state from start
+                    updatedActions =  actions + [succ_action]
 
-                #The successor's heuristic is the successor's priority
-                frontiers.push((succ_state, updatedActions, cost), heuristic(succ_state, problem))
+                    #The successor's heuristic is the successor's priority
+                    frontiers.push((succ_state, updatedActions, cost), heuristic(succ_state, problem))
 
-
-
+    return []
 
 # Abbreviations
 dfs = depthFirstSearch
