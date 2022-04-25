@@ -104,7 +104,7 @@ class InfoPane:
 
     def drawPane(self):
         self.scoreText = text( self.toScreen(0, 0  ), self.textColor, "SCORE:    0", "Times", self.fontSize, "bold")
-        self.timeText = text( self.toScreen(0, 30), self.textColor, "TIME:    0", "Times", self.fontSize, "bold")
+        self.timeText = text( self.toScreen(0, 30), self.textColor, "TIME:    0 s", "Times", self.fontSize, "bold")
 
     def initializeGhostDistances(self, distances):
         self.ghostDistanceText = []
@@ -123,7 +123,7 @@ class InfoPane:
         changeText(self.scoreText, "SCORE: % 4d" % score)
 
     def setTime(self, time_taken):
-        changeText(self.timeText, "Time: %.5f" % time_taken)
+        changeText(self.timeText, "Time: %.5f s" % time_taken)
 
     def setTeam(self, isBlue):
         text = "RED TEAM"
@@ -237,7 +237,7 @@ class PacmanGraphics:
             self.agentImages[agentIndex] = (newState, image )
         refresh()
 
-    def update(self, newState):
+    def update(self, newState, time_taken):
         agentIndex = newState._agentMoved
         agentState = newState.agentStates[agentIndex]
 
@@ -254,7 +254,7 @@ class PacmanGraphics:
         if newState._capsuleEaten != None:
             self.removeCapsule(newState._capsuleEaten, self.capsules)
         self.infoPane.updateScore(newState.score)
-        self.infoPane.setTime(newState.time_taken)
+        self.infoPane.setTime(time_taken)
         if 'ghostDistances' in dir(newState):
             self.infoPane.updateGhostDistances(newState.ghostDistances)
 
