@@ -24,7 +24,7 @@ from game import Directions
 # Some code from a Pacman implementation by LiveWires, and used / modified with permission.
 
 DEFAULT_GRID_SIZE = 30.0
-INFO_PANE_HEIGHT = 80
+INFO_PANE_HEIGHT = 120
 BACKGROUND_COLOR = formatColor(0,0,0)
 WALL_COLOR = formatColor(0.0/255.0, 51.0/255.0, 255.0/255.0)
 INFO_PANE_COLOR = formatColor(.4,.4,0)
@@ -103,8 +103,10 @@ class InfoPane:
         return x,y
 
     def drawPane(self):
-        self.scoreText = text( self.toScreen(0, 0  ), self.textColor, "SCORE:    0", "Times", self.fontSize, "bold")
-        self.timeText = text( self.toScreen(0, 30), self.textColor, "TIME:    0 s", "Times", self.fontSize, "bold")
+        # self.scoreText = text( self.toScreen(0, 0  ), self.textColor, "SCORE:    0", "Times", self.fontSize, "bold")
+        self.timeText = text( self.toScreen(0, 0), self.textColor, "Time:    0 s", "Times", self.fontSize, "bold")
+        self.costText = text( self.toScreen(0, 30), self.textColor, "Cost:    0", "Times", self.fontSize, "bold")
+        self.expandedText = text( self.toScreen(0, 60), self.textColor, "Expanded:    0", "Times", self.fontSize, "bold")
 
     def initializeGhostDistances(self, distances):
         self.ghostDistanceText = []
@@ -122,8 +124,10 @@ class InfoPane:
     def updateScore(self, score):
         changeText(self.scoreText, "SCORE: % 4d" % score)
 
-    def setTime(self, time_taken):
-        changeText(self.timeText, "Time: %.5f s" % time_taken)
+    def setAgentInfo(self, agent):
+        changeText(self.timeText, "Time: %.4f s" % agent.time_taken)
+        changeText(self.costText, "Cost: %3d " % agent.cost)
+        changeText(self.expandedText, "Expanded: %3d" % agent.expanded)
 
     def setTeam(self, isBlue):
         text = "RED TEAM"
@@ -237,7 +241,7 @@ class PacmanGraphics:
             self.agentImages[agentIndex] = (newState, image )
         refresh()
 
-    def update(self, newState, time_taken):
+    def update(self, newState, agent):
         agentIndex = newState._agentMoved
         agentState = newState.agentStates[agentIndex]
 
@@ -253,8 +257,8 @@ class PacmanGraphics:
             self.removeFood(newState._foodEaten, self.food)
         if newState._capsuleEaten != None:
             self.removeCapsule(newState._capsuleEaten, self.capsules)
-        self.infoPane.updateScore(newState.score)
-        self.infoPane.setTime(time_taken)
+        # self.infoPane.updateScore(newState.score)
+        self.infoPane.setAgentInfo(agent)
         if 'ghostDistances' in dir(newState):
             self.infoPane.updateGhostDistances(newState.ghostDistances)
 
