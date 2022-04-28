@@ -214,16 +214,15 @@ def aStarSearch(problem, heuristic=nullHeuristic):
             
             for succ in successors:
                 succ_state, succ_action, succ_cost = succ 
+                
+                #Actions required to reach the successor state from start
+                updatedActions =  actions + [succ_action]
 
-                if succ_state not in visited:
-                    #Actions required to reach the successor state from start
-                    updatedActions =  actions + [succ_action]
+                #Cost to reach the successor state from start
+                updatedCost =  cost + succ_cost 
 
-                    #Cost to reach the successor state from start
-                    updatedCost =  cost + succ_cost 
-
-                    #updatedCost + the successor's heuristic is the successor's priority
-                    frontiers.push((succ_state, updatedActions, updatedCost), updatedCost + heuristic(succ_state, problem))
+                #updatedCost + the successor's heuristic is the successor's priority
+                frontiers.push((succ_state, updatedActions, updatedCost), updatedCost + heuristic(succ_state, problem))
     return []
 
 
